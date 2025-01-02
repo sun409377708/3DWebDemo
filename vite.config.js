@@ -3,6 +3,13 @@ import { resolve } from 'path'
 
 export default defineConfig({
   base: '/3DWebDemo/',
+  resolve: {
+    alias: {
+      'three': '/node_modules/three/build/three.module.js',
+      'three/examples/jsm/controls/OrbitControls': '/node_modules/three/examples/jsm/controls/OrbitControls.js',
+      'three/examples/jsm/loaders/GLTFLoader': '/node_modules/three/examples/jsm/loaders/GLTFLoader.js'
+    }
+  },
   server: {
     port: 5173,
     strictPort: true,

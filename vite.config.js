@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  base: '/3DWebDemo/',  // 添加base配置，值为仓库名
   server: {
     port: 5173,
-    strictPort: true, // 如果端口被占用，则会抛出错误而不是尝试下一个端口
+    strictPort: true,
     open: true
   },
   optimizeDeps: {

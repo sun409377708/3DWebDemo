@@ -11,8 +11,11 @@ export default defineConfig({
     include: ['three']
   },
   build: {
-    commonjsOptions: {
-      include: [/three/, /node_modules/]
+    assetsInclude: ['**/*.glb'],  // 将.glb文件作为资源处理
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+      }
     }
   }
 })

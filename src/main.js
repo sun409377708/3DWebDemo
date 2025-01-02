@@ -15,7 +15,9 @@ class App {
     }
 
     async init() {
-        await this.modelController.loadModel('/models/ren.glb');
+        // 根据是否是生产环境决定模型路径
+        const modelPath = import.meta.env.PROD ? '/3DWebDemo/models/ren.glb' : '/models/ren.glb';
+        await this.modelController.loadModel(modelPath);
         this.setupEventListeners();
         this.animate();
     }

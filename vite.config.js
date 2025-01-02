@@ -21,7 +21,13 @@ export default defineConfig({
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js'
       },
+    },
+    commonjsOptions: {
+      include: [/node_modules/]
     }
+  },
+  optimizeDeps: {
+    include: ['three', '@tweenjs/tween.js']
   },
   publicDir: 'public'
 })

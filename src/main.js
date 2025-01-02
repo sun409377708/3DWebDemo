@@ -1,7 +1,7 @@
 import { SceneManager } from './SceneManager';
 import { ModelController } from './ModelController';
-import * as THREE from 'three';
-import * as TWEEN from '@tweenjs/tween.js';
+import * as THREE from '../node_modules/three/build/three.module.js';
+import * as TWEEN from '../node_modules/@tweenjs/tween.js/dist/tween.umd.js';
 
 class App {
     constructor() {

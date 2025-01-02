@@ -20,7 +20,7 @@ export class SceneManager {
     }
 
     createScene() {
-        this.scene.background = new THREE.Color(0xf5f5f5);  // 使用浅白色背景
+        this.scene.background = new THREE.Color(0x000000);  // 纯黑色背景
     }
 
     createCamera() {

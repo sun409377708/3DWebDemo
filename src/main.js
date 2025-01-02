@@ -15,11 +15,16 @@ class App {
     }
 
     async init() {
-        // 根据是否是生产环境决定模型路径
-        const modelPath = import.meta.env.PROD ? '/3DWebDemo/models/ren.glb' : '/models/ren.glb';
-        await this.modelController.loadModel(modelPath);
-        this.setupEventListeners();
-        this.animate();
+        try {
+            // 根据是否是生产环境决定模型路径
+            const modelPath = import.meta.env.PROD ? '/3DWebDemo/models/ren.glb' : '/models/ren.glb';
+            console.log('Loading model from path:', modelPath);
+            await this.modelController.loadModel(modelPath);
+            this.setupEventListeners();
+            this.animate();
+        } catch (error) {
+            console.error('Failed to initialize:', error);
+        }
     }
 
     setupEventListeners() {

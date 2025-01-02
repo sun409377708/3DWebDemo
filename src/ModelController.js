@@ -24,56 +24,60 @@ export class ModelController {
     }
 
     async loadModel(url) {
+        console.log('Attempting to load model from:', url);
         const loader = new GLTFLoader();
         
-        loader.load(
-            url,
-            (gltf) => {
-                console.log('Model loaded successfully');
-                this.model = gltf.scene;
-                
-                // 调试：打印模型信息
-                console.log('Model structure:', this.model);
-                this.model.traverse((node) => {
-                    if (node.isMesh) {
-                        console.log('Mesh found:', {
-                            name: node.name,
-                            materialCount: Array.isArray(node.material) ? node.material.length : 1,
-                            materials: Array.isArray(node.material) ? 
-                                node.material.map(m => ({
-                                    name: m.name,
-                                    color: m.color ? m.color.getHexString() : 'none',
-                                    map: m.map ? 'yes' : 'no'
-                                })) : 
-                                [{
-                                    name: node.material.name,
-                                    color: node.material.color ? node.material.color.getHexString() : 'none',
-                                    map: node.material.map ? 'yes' : 'no'
-                                }]
-                        });
-                    }
-                });
+        return new Promise((resolve, reject) => {
+            loader.load(
+                url,
+                (gltf) => {
+                    console.log('Model loaded successfully');
+                    this.model = gltf.scene;
+                    
+                    // 调试：打印模型信息
+                    console.log('Model structure:', this.model);
+                    this.model.traverse((node) => {
+                        if (node.isMesh) {
+                            console.log('Mesh found:', {
+                                name: node.name,
+                                materialCount: Array.isArray(node.material) ? node.material.length : 1,
+                                materials: Array.isArray(node.material) ? 
+                                    node.material.map(m => ({
+                                        name: m.name,
+                                        color: m.color ? m.color.getHexString() : 'none',
+                                        map: m.map ? 'yes' : 'no'
+                                    })) : 
+                                    [{
+                                        name: node.material.name,
+                                        color: node.material.color ? node.material.color.getHexString() : 'none',
+                                        map: node.material.map ? 'yes' : 'no'
+                                    }]
+                            });
+                        }
+                    });
 
-                // 设置模型位置和缩放
-                this.model.position.set(0, -0.8, 0);
-                this.model.scale.set(0.0125, 0.0125, 0.0125);
+                    // 设置模型位置和缩放
+                    this.model.position.set(0, -0.8, 0);
+                    this.model.scale.set(0.0125, 0.0125, 0.0125);
 
-                // 递归处理所有节点
-                this.processNode(this.model);
+                    // 递归处理所有节点
+                    this.processNode(this.model);
 
-                // 添加到场景
-                this.scene.add(this.model);
+                    this.scene.add(this.model);
 
-                // 添加旋转动画
-                this.addRotationAnimation();
-            },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            (error) => {
-                console.error('Error loading model:', error);
-            }
-        );
+                    // 添加旋转动画
+                    this.addRotationAnimation();
+                    resolve(this.model);
+                },
+                (xhr) => {
+                    console.log('Loading progress:', (xhr.loaded / xhr.total * 100) + '%');
+                },
+                (error) => {
+                    console.error('Error loading model:', error);
+                    reject(error);
+                }
+            );
+        });
     }
 
     processNode(node, level = 0, parentName = 'root') {

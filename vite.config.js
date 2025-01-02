@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 
 export default defineConfig({
   base: '/3DWebDemo/',  // 添加base配置，值为仓库名
@@ -15,7 +16,16 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
+      },
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.endsWith('.glb')) {
+            return 'models/[name][extname]'
+          }
+          return 'assets/[name]-[hash][extname]'
+        }
       }
     }
-  }
+  },
+  publicDir: 'models'  // 添加这行，确保models目录被复制到dist
 })

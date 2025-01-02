@@ -5,9 +5,10 @@ export default defineConfig({
   base: '/3DWebDemo/',
   resolve: {
     alias: {
-      'three': '/node_modules/three/build/three.module.js',
-      'three/examples/jsm/controls/OrbitControls': '/node_modules/three/examples/jsm/controls/OrbitControls.js',
-      'three/examples/jsm/loaders/GLTFLoader': '/node_modules/three/examples/jsm/loaders/GLTFLoader.js'
+      '@': resolve(__dirname, './src'),
+      'three': 'three',
+      'three/examples/jsm/controls/OrbitControls': resolve(__dirname, './node_modules/three/examples/jsm/controls/OrbitControls.js'),
+      'three/examples/jsm/loaders/GLTFLoader': resolve(__dirname, './node_modules/three/examples/jsm/loaders/GLTFLoader.js')
     }
   },
   server: {

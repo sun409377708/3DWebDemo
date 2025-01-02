@@ -1,7 +1,6 @@
 import { SceneManager } from './SceneManager';
 import { ModelController } from './ModelController';
 import * as THREE from '../node_modules/three/build/three.module.js';
-import * as TWEEN from '../node_modules/@tweenjs/tween.js/dist/tween.umd.js';
 
 class App {
     constructor() {
@@ -39,8 +38,8 @@ class App {
 
     animate() {
         requestAnimationFrame(() => this.animate());
-        TWEEN.update();
-        this.sceneManager.update();
+        this.modelController.update();  // 更新模型控制器
+        this.sceneManager.update();     // 更新场景
     }
 }
 

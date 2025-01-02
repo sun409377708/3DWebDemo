@@ -72,7 +72,13 @@ export class SceneManager {
     }
 
     update() {
-        this.controls.update();
+        if (this.controls) {
+            this.controls.update();
+        }
+        this.render();
+    }
+
+    render() {
         this.renderer.render(this.scene, this.camera);
     }
 }

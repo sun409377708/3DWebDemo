@@ -11,6 +11,21 @@ export class ModelController {
         this.selectedPart = null;
         this.rotationAnimation = null;
         this.rotationClip = null;
+        this.highlightMaterial = new THREE.MeshPhysicalMaterial({
+            color: new THREE.Color(1, 0.2, 0.2),    // 淡红色
+            emissive: new THREE.Color(0.8, 0, 0),   // 发光颜色
+            emissiveIntensity: 0.3,                 // 发光强度
+            metalness: 0.8,                         // 金属感
+            roughness: 0.2,                         // 光滑度
+            clearcoat: 1.0,                         // 清漆涂层
+            clearcoatRoughness: 0.1,                // 清漆涂层光滑度
+            transparent: true,
+            opacity: 0.7,                           // 降低透明度
+            side: THREE.DoubleSide
+        });
+        this.originalMaterials = new Map();
+        this.clock = new THREE.Clock();             // 用于动画计时
+        this.isHighlighted = false;                 // 是否处于高亮状态
 
         // 添加环境光
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -220,10 +235,9 @@ export class ModelController {
         action.play();
 
         // 更新动画
-        const clock = new THREE.Clock();
         const animate = () => {
             if (mixer) {
-                const delta = clock.getDelta();
+                const delta = this.clock.getDelta();
                 mixer.update(delta);
             }
             requestAnimationFrame(animate);
@@ -273,18 +287,16 @@ export class ModelController {
 
             // 如果点击了同一个部位，取消高亮并恢复旋转
             if (this.selectedPart === clickedObject) {
-                this.restoreOriginalMaterial(clickedObject);
-                this.selectedPart = null;
+                this.clearHighlight();
                 // 恢复旋转动画
                 this.startRotation();
             } else {
                 // 恢复之前选中部位的材质
                 if (this.selectedPart) {
-                    this.restoreOriginalMaterial(this.selectedPart);
+                    this.clearHighlight();
                 }
                 
                 this.highlightMesh(clickedObject);
-                this.selectedPart = clickedObject;
                 // 停止旋转动画
                 this.stopRotation();
             }
@@ -294,41 +306,55 @@ export class ModelController {
     }
 
     highlightMesh(mesh) {
-        if (!mesh.isMesh || !this.meshes.has(mesh.uuid)) return;
-
-        const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-        materials.forEach(material => {
-            // 保存原始材质属性
-            material.userData.originalColor = material.color.clone();
-            material.userData.originalEmissive = material.emissive.clone();
-            material.userData.originalEmissiveIntensity = material.emissiveIntensity;
-            
-            // 设置淡红色高亮效果
-            material.emissive.setHex(0xff0000);  // 红色
-            material.emissiveIntensity = 0.5;    // 较低的强度使其显得柔和
-        });
+        if (this.selectedPart === mesh) return;
         
-        console.log('Highlighting mesh:', mesh.name);
+        // 取消之前的高亮
+        this.clearHighlight();
+        
+        if (mesh) {
+            // 保存原始材质
+            this.originalMaterials.set(mesh, mesh.material);
+            
+            // 设置高亮材质
+            mesh.material = this.highlightMaterial.clone();
+            
+            this.selectedPart = mesh;
+            this.isHighlighted = true;              // 启用闪烁
+            console.log('Started highlight animation');
+        }
     }
 
-    restoreOriginalMaterial(mesh) {
-        if (!mesh.isMesh || !this.meshes.has(mesh.uuid)) return;
-
-        const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-        materials.forEach(material => {
-            if (material.userData.originalColor) {
-                // 恢复原始颜色和发光属性
-                material.color.copy(material.userData.originalColor);
-                material.emissive.copy(material.userData.originalEmissive);
-                material.emissiveIntensity = material.userData.originalEmissiveIntensity || 0;
-                
-                // 清除保存的原始值
-                delete material.userData.originalColor;
-                delete material.userData.originalEmissive;
-                delete material.userData.originalEmissiveIntensity;
+    clearHighlight() {
+        if (this.selectedPart) {
+            // 恢复原始材质
+            const originalMaterial = this.originalMaterials.get(this.selectedPart);
+            if (originalMaterial) {
+                this.selectedPart.material = originalMaterial;
+                this.originalMaterials.delete(this.selectedPart);
             }
-        });
+            
+            this.selectedPart = null;
+            this.isHighlighted = false;             // 禁用闪烁
+            console.log('Stopped highlight animation');
+        }
+    }
+
+    update() {
+        // 更新闪烁效果
+        if (this.isHighlighted && this.selectedPart && this.selectedPart.material) {
+            const time = this.clock.getElapsedTime();
+            // 使用正弦函数创建平滑的闪烁效果
+            const pulseValue = Math.sin(time * 5) * 0.5 + 0.5;  // 值在0到1之间变化
+            
+            // 更新发光强度
+            this.selectedPart.material.emissiveIntensity = 0.3 + (pulseValue * 0.5);
+            // 更新透明度
+            this.selectedPart.material.opacity = 0.7 + (pulseValue * 0.2);
+        }
         
-        console.log('Restored original material for mesh:', mesh.name);
+        // 更新其他动画...
+        if (this.rotationAnimation) {
+            this.rotationAnimation.update(this.clock.getDelta());
+        }
     }
 }

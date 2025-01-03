@@ -1,6 +1,6 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import * as TWEEN from '../node_modules/@tweenjs/tween.js/dist/tween.umd.js';
+import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
+import { GLTFLoader } from 'https://unpkg.com/three@0.157.0/examples/jsm/loaders/GLTFLoader.js';
+import * as TWEEN from 'https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js';
 
 export class ModelController {
     constructor(scene) {

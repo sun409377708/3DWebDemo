@@ -1,5 +1,5 @@
-import { SceneManager } from './SceneManager';
-import { ModelController } from './ModelController';
+import { SceneManager } from '/3DWebDemo/src/SceneManager.js';
+import { ModelController } from '/3DWebDemo/src/ModelController.js';
 import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
 
 class App {

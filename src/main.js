@@ -1,6 +1,6 @@
-import { SceneManager } from '/3DWebDemo/src/SceneManager.js';
-import { ModelController } from '/3DWebDemo/src/ModelController.js';
-import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
+import { SceneManager } from './SceneManager.js';
+import { ModelController } from './ModelController.js';
+import * as THREE from 'three';
 
 class App {
     constructor() {
@@ -15,8 +15,7 @@ class App {
 
     async init() {
         try {
-            // 根据是否是生产环境决定模型路径
-            const modelPath = import.meta.env.PROD ? '/3DWebDemo/models/ren.glb' : '/models/ren.glb';
+            const modelPath = '/models/ren.glb';
             console.log('Loading model from path:', modelPath);
             await this.modelController.loadModel(modelPath);
             this.setupEventListeners();
